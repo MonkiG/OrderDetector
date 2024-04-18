@@ -1,0 +1,24 @@
+from amazon_transcribe.handlers import TranscriptResultStreamHandler
+from amazon_transcribe.model import TranscriptEvent
+
+class MyEventHandler(TranscriptResultStreamHandler):
+    def __init__(self, output_stream, keywords):
+        super().__init__(output_stream)
+        self.keywords = [keyword.lower() for keyword in keywords]
+        self.transcription_buffer = ""  # Buffer para acumular transcripciones completas
+
+    async def handle_transcript_event(self, transcript_event: TranscriptEvent):
+        results = transcript_event.transcript.results
+        for result in results:
+            if result.is_partial:
+                continue
+            self.transcription_buffer += result.alternatives[0].transcript + " "
+            if result.end_time - result.start_time > 1.0:  # Asumiendo que una pausa larga indica el fin de una sentencia
+                self.process_complete_sentence(self.transcription_buffer)
+                self.transcription_buffer = ""  # Resetea el buffer después de procesar
+
+    def process_complete_sentence(self, sentence):
+        sentence_lower = sentence.lower()
+        if any(keyword in sentence_lower for keyword in self.keywords):
+            print(sentence)  # Imprime la sentencia si contiene alguna palabra clave
+
