@@ -3,6 +3,8 @@ from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 import sounddevice
+from supabase import supabase  # Asegúrate de que este importe sea correcto
+from functools import partial
 
 # Clase para manejar eventos de transcripción
 class MyEventHandler(TranscriptResultStreamHandler):
@@ -19,6 +21,7 @@ class MyEventHandler(TranscriptResultStreamHandler):
                 transcript = alt.transcript.lower()
                 if any(keyword in transcript for keyword in self.keywords):
                     print(alt.transcript)
+                    await async_insert_order({'transcript': alt.transcript})
 
 # Generador de audio del micrófono
 async def mic_stream():
@@ -43,6 +46,16 @@ async def write_chunks(input_stream):
         await input_stream.send_audio_event(audio_chunk=chunk)
     await input_stream.end_stream()
 
+# Función asíncrona para insertar datos en Supabase
+async def async_insert_order(data):
+    loop = asyncio.get_running_loop()
+    # Ejecuta la inserción en un thread aparte para no bloquear el loop de asyncio
+    response = await loop.run_in_executor(None, partial(supabase.table('pedidos').insert, data).execute)
+    if response.error:
+        print("Error al insertar:", response.error)
+    else:
+        print("Inserción exitosa:", response.data)
+
 # Función principal para manejar la transcripción
 async def basic_transcribe():
     client = TranscribeStreamingClient(region="us-east-1")
@@ -61,4 +74,72 @@ async def main():
     await basic_transcribe()
 
 # Ejecución del script
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
