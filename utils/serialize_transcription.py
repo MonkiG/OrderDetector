@@ -1,4 +1,4 @@
-from utils.console import log, success
+from utils.console import log, success, error
 import re
 
 
@@ -28,6 +28,8 @@ def get_info(data: str):
 
         success("Order serialized correctly")
         return serialized
+    else:
+        error("Error retrieving data")
 
 
 def parse_products(products):
