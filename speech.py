@@ -31,7 +31,7 @@ def get_speech_to_text():
             if "mesero" in transcription:
                 success("Transcription completed")
                 log("Transcription: ", transcription)
-                return ("mesero", transcription)
+                return ("waiter", transcription)
 
         except Exception as e:
             play_audio("error")
