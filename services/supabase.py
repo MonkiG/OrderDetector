@@ -10,5 +10,7 @@ def save_order(data):
     try:
         client.table("orders").insert({"table": table, "products": products}).execute()
         success("Data uploaded to database successfully")
+        return True
     except Exception as e:
         error(e)
+        return False
