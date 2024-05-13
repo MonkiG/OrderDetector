@@ -17,9 +17,11 @@ def save_products_local(filename="products.json"):
 
 
 def save_waiters_local(filename="waiters.json"):
-    response = client.table("products").select("id, name").execute()
+    log("Retrieving waiters to local")
+    response = client.table("waiters").select("id, name").execute()
     data, count = response
-
+    success("Waiters retrieved successfully!")
     products = data[1]
     if len(products) > 0:
         save_json_local(products, filename)
+        log("Waiters saved successfully!")

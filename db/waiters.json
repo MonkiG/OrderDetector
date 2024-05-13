@@ -1,14 +1,10 @@
 [
     {
-        "id": "1",
-        "name": "Ramón"
+        "id": 1,
+        "name": "ramon"
     },
     {
-        "id": "2",
-        "name": "David"
-    },
-    {
-        "id": "3",
-        "name": "Daniel"
+        "id": 2,
+        "name": "david"
     }
 ]
