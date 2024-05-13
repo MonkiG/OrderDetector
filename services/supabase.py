@@ -9,7 +9,7 @@ def save_order(data, waiter):
 
     try:
         client.table("orders").insert(
-            {"table": table, "products": products, "mesero": waiter}
+            {"table": table, "products": products, "waiter": waiter}
         ).execute()
         success("Data uploaded to database successfully")
         return True

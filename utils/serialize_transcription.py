@@ -1,5 +1,7 @@
 from utils.console import log, success, error, warn
 import re
+from .json_helpers import get_json
+from .product_similarity import product_similarity
 
 
 def transcription_to_json(transcription: str, type: str):
@@ -76,9 +78,28 @@ def parse_products(products):
     )
 
     products_list = []
+    db_products = get_json("products.json")
 
     for i in range(0, len(products_splited), 2):
         amount = products_splited[i].strip()
         product = products_splited[i + 1].strip()
-        products_list.append({"name": product, "amount": count_dictionary[amount]})
+        for db_product in db_products:
+            ratio = product_similarity(product, db_product["name"])
+            if ratio > 0.5:
+                products_list.append(
+                    {
+                        "name": db_product["name"],
+                        "id": db_product["id"],
+                        "amount": count_dictionary[amount],
+                    }
+                )
+                break
+            else:
+                products_list.append(
+                    {
+                        "name": product,
+                        "id": f"unkown-product-{product}",
+                        "amount": count_dictionary[amount],
+                    }
+                )
     return products_list

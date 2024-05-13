@@ -1,9 +1,14 @@
 import os
 import json
+from .console import warn
 
 
 def get_json(filename):
-    json_file_path = os.path.join("db", filename)
+    # Obtiene la ruta al directorio raíz del proyecto
+    root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+    # Construye la ruta al archivo JSON dentro de la carpeta "db"
+    json_file_path = os.path.join(root_path, "db", filename)
 
     if os.path.exists(json_file_path):
         # Leer el contenido del archivo JSON
