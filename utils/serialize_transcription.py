@@ -1,14 +1,34 @@
-from utils.console import log, success, error
+from utils.console import log, success, error, warn
 import re
 
 
-def transcription_to_json(transcription: str):
+def transcription_to_json(transcription: str, type: str):
     log("Serialiazing data to json")
-    transcription_serialized = get_info(transcription.lower())
-    return transcription_serialized
+    if type == "order":
+        transcription_serialized = get_order(transcription.lower())
+        return transcription_serialized
+    if type == "waiter":
+        waiter = get_waiter(transcription)
+        return waiter
 
 
-def get_info(data: str):
+def get_waiter(data: str):
+    data = data.lower()
+    waiter_regex = r"(?<=mesero)\s(.+)"
+    log("Retrieving waiter")
+
+    waiter_match = re.search(waiter_regex, data)
+
+    if waiter_match:
+        waiter = waiter_match.group(1)
+        success("Waiter retrieved successfully")
+        return waiter
+    else:
+        error("Error retrieving waiter")
+        print(data)
+
+
+def get_order(data: str):
 
     table_regex = r"t(\d)"
     products_regex = r"(?<=productos)\s(.+)"
